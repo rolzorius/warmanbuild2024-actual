@@ -1,0 +1,105 @@
+
+#include <AFMotor.h>
+#include <Servo.h>
+#define button 34
+
+// DC motor on M2
+AF_DCMotor actuator(2);
+AF_DCMotor extender(1);
+// DC hobby servo
+Servo servo1;
+// Stepper motor on M3+M4 48 steps per revolution
+AF_Stepper stepper1(200, 2);
+
+void setup() {
+  Serial.begin(9600);  // set up Serial library at 9600 bps
+  Serial.println("Motor party!");
+  pinMode(button, INPUT_PULLUP);
+  // turn on servo
+  servo1.attach(9);
+
+  // turn on motor #2
+  actuator.setSpeed(255);
+  actuator.run(RELEASE);
+  stepper1.setSpeed(10);
+  servo1.write(0);
+}
+
+int i;
+int task = 0;
+// Test the DC motor, stepper and servo ALL AT ONCE!
+void loop() {
+
+  //while (digitalRead(button) == 1) {
+  //Serial.print("Awaiting instructions!");
+  //if (digitalRead(button) == 0) {
+  //Serial.print("Switching to task 2!");
+  //task = 2;
+  //}
+  //Serial.println(task);
+  //}
+  
+  actuator.run(FORWARD);
+  //actuator.run(BACKWARD);
+  actuator.setSpeed(255);
+  delay(5775);
+  actuator.setSpeed(0);
+  stepper1.step(132, FORWARD, INTERLEAVE); 
+  delay(2000);
+  
+  extender.run(FORWARD);
+  extender.setSpeed(200);
+  servo1.write(90);
+  delay(790);
+  extender.setSpeed(0);
+  //servo1.write(90);
+  delay(3000);
+  servo1.write(0);
+  delay(3000);
+
+  actuator.run(FORWARD);
+  //actuator.run(BACKWARD);
+  actuator.setSpeed(255);
+  delay(8000);
+  actuator.setSpeed(0);
+  
+  extender.run(BACKWARD);
+  extender.setSpeed(200);
+  delay(850);
+  extender.setSpeed(0);
+
+  stepper1.step(345, FORWARD, INTERLEAVE); 
+  delay(2000);
+
+
+  extender.run(FORWARD);
+  extender.setSpeed(200);
+  servo1.write(90);
+  delay(790);
+  extender.setSpeed(0);
+  //servo1.write(90);
+  delay(3000);
+  servo1.write(0);
+  delay(3000);
+  
+
+  delay(2000);
+  extender.run(BACKWARD);
+  extender.setSpeed(200);
+  delay(850);
+  extender.setSpeed(0);
+
+  delay(1000);
+
+  stepper1.step(975, BACKWARD, INTERLEAVE); 
+  delay(2000);
+
+  actuator.run(BACKWARD);
+  actuator.setSpeed(255);
+  delay(12000);
+  actuator.setSpeed(0);
+  delay(1500);
+
+  
+  
+}
